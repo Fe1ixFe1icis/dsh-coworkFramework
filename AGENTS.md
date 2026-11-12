@@ -14,10 +14,11 @@
   - `cli.mjs` 命令行
   - `util.mjs` 文件锁、原子写、路径与参数工具
 - `bin/`：`cowork` 命令入口（`cowork.mjs` + Windows `cowork.cmd`）
-- `install/`：DSH 插件安装/卸载、CLI 安装、给同伴打包、本地测试依赖准备
+- `install/`：DSH bundle 安装（`install-bundle.ps1`）、旧版插件安装/卸载、CLI 安装、给同伴打包、本地测试依赖准备
+- `cordis.patch.yml`：bundle 默认层（`package.json` 的 `dsh.bundle.patch` 指向它）
 - `tests/`：`unit.test.mjs` 单元测试、`smoke.mjs` 两机模拟、`plugin.test.mjs` 插件工具、`smb-smoke.mjs` 真实共享目录
 - `scripts/`：`check.mjs` 仓库自检、`package-release.mjs` 生成 GitHub Release 源码包
-- `docs/`：架构（中/英）、两机教程、工具参考、排障
+- `docs/`：架构（中/英）、两机教程、工具参考、排障、bundle 发布/安装指南（`publishing.zh.md`）
 - `.github/`：CI、Release 工作流、Issue/PR 模板
 - `work/`、`research/`、`dist/`：本地工作目录/侦察产物/打包产物，均被 git 忽略
 
@@ -30,6 +31,7 @@ npm run test:plugin         # 插件工具/提示注入（需要 DSH 的 node_mo
 npm run test:smb -- --share \\fileserver\cowork   # 真实共享目录测试（不传则 SKIP）
 npm run test:all            # check + test + test:plugin
 npm run package             # 生成 dist/cowork-framework-<version>.zip + .sha256
+npm run pack                # 生成可被 dsh plugin add 安装的 dist/*.tgz bundle
 node bin/cowork.mjs help
 ```
 

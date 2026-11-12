@@ -21,7 +21,7 @@ if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
 # 用临时目录收集要打包的文件（排除 node_modules / work / tests / research / dist / .git）
 $staging = Join-Path $env:TEMP "cowork-pkg-$(Get-Random)"
 New-Item -ItemType Directory -Force -Path $staging | Out-Null
-$excludeDirs = @("node_modules", "work", "work-b", "tests", "research", "dist", ".git", ".github", ".cowork")
+$excludeDirs = @("node_modules", ".pnpm-store", ".tmp", "work", "work-b", "tests", "research", "dist", ".git", ".github", ".cowork")
 $items = Get-ChildItem -Path $root -Force | Where-Object { $excludeDirs -notcontains $_.Name }
 foreach ($item in $items) {
   if ($item.PSIsContainer) {
@@ -35,8 +35,10 @@ Remove-Item $staging -Recurse -Force
 
 Write-Host "已生成：$zipPath" -ForegroundColor Green
 Write-Host "在另一台机器上解压后运行："
-Write-Host "  .\install\install-dsh-plugin.ps1 -RepoPath <本机克隆目录> -Agent <身份>"
+Write-Host "  .\install\install-bundle.ps1 -Profile web        # 推荐：作为 DSH bundle 安装"
+Write-Host "  # 或旧版兜底：.\install\install-dsh-plugin.ps1 -RepoPath <本机克隆目录> -Agent <身份>"
 Write-Host "  然后按 docs\tutorial-two-machines.zh.md 的步骤 join 共享工作区。"
+Write-Host "  注意：解压后先运行 cowork join 生成 ~\.cowork\config.json，插件即可零配置解析 repoPath/agent。"
 
 if ($CopyToShare -and $CopyToShare.Trim() -ne "") {
   New-Item -ItemType Directory -Force -Path $CopyToShare | Out-Null

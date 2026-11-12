@@ -159,20 +159,19 @@ The plugin is installed at `~/.dsh/profiles/<profile>/node_modules/@cowork/frame
 
 ### 4.2 Installation and hot reload
 
-- The install script copies the package into the profile's `node_modules`, then appends an entry to `cordis.patch.yml`:
+- **Recommended: install as a DSH bundle.** The package ships a `cordis.patch.yml` that inserts one `id: cowork` row. `dsh plugin --profile <p> add <package/path/tarball>` records the package in the profile's `dsh.profile.bundles` and applies that layer automatically. `repoPath` / `agent` are resolved by the plugin from `COWORK_REPO` / `COWORK_AGENT` → `~/.cowork/config.json` → the clone's `.cowork/config.json`:
 
   ```yaml
   - insert:
       - id: cowork
         name: '@cowork/framework'
         config:
-          repoPath: 'D:/work/project'
-          agent: 'machine-a'
           notify: true
   ```
 
-- `dsh --profile <p> --dump-config` validates that the configuration tree composes, without touching the network. The install script runs it automatically.
-- With `patchReload: live` on the profile, saving the patch file triggers a hot reload and **no DSH restart is required**. A failed reload only reports an error; it does not kill the process. To roll back, delete the whole `# >>> cowork plugin` block and the plugin directory.
+- **Fallback: the legacy install script.** It copies the package into the profile's `node_modules` and appends an entry with explicit `repoPath` / `agent` to the profile's `cordis.patch.yml`. Use it for older DSH versions or fully offline installs. Do not use both modes at once: they would create two `id: cowork` rows.
+- `dsh --profile <p> --dump-config` validates that the configuration tree composes, without touching the network.
+- With `patchReload: live` on the profile, saving the patch file triggers a hot reload and **no DSH restart is required**. A failed reload only reports an error; it does not kill the process. Roll back with `dsh plugin remove` for a bundle, or by deleting the whole `# >>> cowork plugin` block and the plugin directory for a manual install.
 - The install script backs up `cordis.patch.yml` to a timestamped `.bak` file first.
 
 ### 4.3 Host process vs sandbox

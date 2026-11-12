@@ -32,6 +32,9 @@ jobs:
       - name: Build release archive
         run: npm run package
 
+      - name: Build installable npm tarball (DSH bundle)
+        run: npm run pack
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -39,3 +42,4 @@ jobs:
           files: |
             dist/*.zip
             dist/*.sha256
+            dist/*.tgz

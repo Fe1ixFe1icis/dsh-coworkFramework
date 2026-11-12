@@ -68,8 +68,8 @@
 | `cowork-framework` | 与包名 `@cowork/framework` 完全一致，略长 |
 | `cowork-lan` | 强调局域网场景 |
 
-> `RELEASING.md` 目前用 `<owner>/cowork.git` 作为示例；如果最终用 `dsh-cowork`，记得同步改
-> `package.json` 的 `repository` / `homepage`。
+> `package.json` 的 `repository` / `homepage` 已指向 `Fe1ixFe1icis/dsh-coworkFramework`；
+> 如果仓库改名，记得同步这两项和文档里的 GitHub 示例。
 
 ---
 

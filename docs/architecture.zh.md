@@ -148,21 +148,26 @@ Node 解析会向上找到 `~/.dsh/profiles/node_modules` 里的 `@deepseek-ai/*
 
 ### 4.2 安装与热加载
 
-- 安装脚本把插件复制到 profile 的 `node_modules`，再在 `cordis.patch.yml` 末尾追加：
+- **推荐：以 DSH bundle 安装。** 包内 `cordis.patch.yml` 声明一行 `id: cowork`；
+  `dsh plugin --profile <p> add <包名/路径/tarball>` 会把包加入 profile 的
+  `dsh.profile.bundles`，启动时自动应用该层。`repoPath` / `agent` 由插件按
+  `COWORK_REPO` / `COWORK_AGENT` → `~/.cowork/config.json` → 仓库 `.cowork/config.json` 解析：
 
   ```yaml
   - insert:
       - id: cowork
         name: '@cowork/framework'
         config:
-          repoPath: 'D:/work/project'
-          agent: 'A'
           notify: true
   ```
 
-- `dsh --profile <p> --dump-config` 可以离线验证配置树组合是否成功（安装脚本自动执行）。
+- **兜底：旧安装脚本。** 把插件复制到 profile 的 `node_modules`，再在 profile 的
+  `cordis.patch.yml` 末尾追加带 `repoPath` / `agent` 的条目。适合老版本 DSH 或完全离线。
+  两种方式不要同时用，否则会出现两个 `id: cowork` 行。
+- `dsh --profile <p> --dump-config` 可以离线验证配置树组合是否成功。
 - profile 的 `patchReload: live` 开启时，保存补丁文件会触发热加载，**不需要重启 dsh**；
-  热加载失败只报告错误，不会杀掉进程。回滚：删除 `# >>> cowork plugin` 整块 + 删插件目录。
+  热加载失败只报告错误，不会杀掉进程。回滚：bundle 用 `dsh plugin remove`；
+  手工安装删除 `# >>> cowork plugin` 整块 + 插件目录。
 - 安装脚本会先备份 `cordis.patch.yml`（`.bak-时间戳`）。
 
 ### 4.3 宿主进程 vs 沙箱

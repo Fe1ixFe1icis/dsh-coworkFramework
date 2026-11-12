@@ -225,8 +225,16 @@ profile 补丁里 `repoPath` 缺失或写错：
 
 ### 现象：插件条目被自动禁用（`dsh: disabling profile plugin ...`）
 
-插件的 `engines.dsh` / dsh peer 版本与当前 dsh 不匹配。本框架**故意没写**版本约束以避免这个坑；
-如果你手动加了，删掉即可；两台机器 dsh 版本差异大时，统一升级到同版本最稳。
+cowork 声明了 `engines.dsh: ">=0.2.2-rc.1 <0.3.0"`。当前 dsh 版本超出这个范围时，安装或启动会禁用该行。
+
+- 首选：把 dsh 升级到 0.2.x；两台机器版本差异大时，统一到同一版本最稳。
+- 确认插件仍兼容、只是版本号不匹配时，可以按 dsh 的精确版本豁免流程处理：
+
+  ```powershell
+  dsh plugin --profile web allow-version @cowork/framework@0.1.0 --dsh-version <当前版本> --accept-risk
+  ```
+
+  这是有风险的操作，只在明确知道兼容性时使用；`revoke-version` 可撤销。
 
 ### 现象：安装/启动 dsh 时看到 `skipping profile bundle "@deepseek-ai/dsh-experimental-agent-team-web-profile"`
 

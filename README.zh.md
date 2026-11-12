@@ -113,7 +113,7 @@ git clone <你的仓库地址> D:\tools\cowork-framework
 cd D:\tools\cowork-framework
 ```
 
-或者从 GitHub **Releases** 下载 `cowork-framework-0.1.0.zip` 解压。
+或者从 GitHub **Releases** 下载 `cowork-framework-<version>.zip` 解压。
 
 ### 4.2 机器 A：初始化共享工作区
 
@@ -160,6 +160,52 @@ cowork join --share "\\fileserver\cowork" --agent B --dir "D:\work\project"
 
 ### 4.4 安装 DSH 插件
 
+cowork 现在是标准的 DSH **bundle**：`package.json` 声明了 `dsh.bundle.patch`，
+`dsh plugin add` 会同时安装包并让 `cordis.patch.yml` 生效。
+
+#### 方式 A：bundle（推荐）
+
+```powershell
+dsh plugin --profile web add D:\tools\cowork-framework
+dsh --profile web --dump-config        # 应包含 "- id: cowork"
+```
+
+也可以直接用仓库里的脚本（会顺带安装 `cowork` 命令）：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\install\install-bundle.ps1 -Profile web
+```
+
+`dsh plugin add` 也接受 npm 包、GitHub 仓库或 tarball：
+
+```powershell
+dsh plugin --profile web add @cowork/framework
+dsh plugin --profile web add github:Fe1ixFe1icis/dsh-coworkFramework#v0.2.0
+dsh plugin --profile web add .\cowork-framework-<version>.tgz
+```
+
+插件会按 `COWORK_REPO` / `COWORK_AGENT` → `~/.cowork/config.json`（由 `cowork init/join` 写入）
+→ 仓库 `.cowork/config.json` 的顺序解析 `repoPath` / `agent`。如果要为某个 profile 固定值，
+在它的 `cordis.patch.yml` 里按 id 覆盖：
+
+```yaml
+- id: cowork
+  config:
+    repoPath: 'D:/work/project'
+    agent: 'A'
+    notify: true
+```
+
+注意：后叠加的层会整体替换 `config`，覆盖时要把需要的键都写全。卸载：
+
+```powershell
+dsh plugin --profile web remove @cowork/framework
+```
+
+#### 方式 B：离线/手工安装
+
+旧脚本仍然保留，适合 DSH 版本较老或完全离线的场景：
+
 ```powershell
 cd D:\tools\cowork-framework
 powershell -NoProfile -ExecutionPolicy Bypass -File .\install\install-dsh-plugin.ps1 `
@@ -168,18 +214,17 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\install\install-dsh-plugin
   -Agent A
 ```
 
-机器 B 上用 `-Agent B` 和 B 的克隆路径。脚本会：
+机器 B 上用 `-Agent B` 和 B 的克隆路径。脚本会复制包到
+`~/.dsh/profiles/<profile>/node_modules/@cowork/framework`，在 `cordis.patch.yml` 末尾插入条目
+（幂等、自动备份），校验模块加载和 `dsh --dump-config`，并安装 `cowork` 命令。
+卸载用 `install\uninstall-dsh-plugin.ps1 -Profile <profile>`。
 
-- 把包复制到 `~/.dsh/profiles/<profile>/node_modules/@cowork/framework`；
-- 在 `cordis.patch.yml` 末尾插入插件条目（幂等，自动备份）；
-- 校验模块可加载，并执行 `dsh --dump-config`；
-- 除非 `-SkipCli`，否则顺带安装 `cowork` 命令。
+> 不要同时用两种方式，否则会出现两个 `id: cowork` 行。从手工安装迁移时，先运行卸载脚本。
+> 也不要只手动删补丁块：空 patch 文件必须保留 YAML 数组（`[]`），否则下次启动 DSH 会失败。
 
-如果 profile 开了 live patch reload，插件会热加载；否则重启 DSH。验证：`dsh --profile <profile>
---dump-config` 里能看到 `id: cowork`，或新会话工具列表出现 `cowork_status`。
-
-卸载用 `install\uninstall-dsh-plugin.ps1 -Profile <profile>`。不要只手动删补丁块：空 patch 文件必须
-保留 YAML 数组（`[]`），否则下次启动 DSH 会失败。
+如果 profile 开了 live patch reload，插件会热加载；否则重启 DSH。验证：
+`dsh --profile <profile> --dump-config` 里能看到 `id: cowork`，或新会话工具列表出现
+`cowork_status`。完整的发布/安装说明见 [docs/publishing.zh.md](docs/publishing.zh.md)。
 
 ### 4.5 日常工作流
 
@@ -316,8 +361,11 @@ cowork import "\\fileserver\legacy-project"
 - `.github/workflows/ci.yml`：Ubuntu/Windows × Node 20/22，运行 `npm run check`、`npm test`、
   `npm run test:plugin`（缺 DSH 依赖时自动 SKIP），并上传源码包。
 - `.github/workflows/release.yml`：推送 `v*` 标签时运行，生成
-  `dist/cowork-framework-<version>.zip` 和 `.sha256`，自动创建 GitHub Release。
-- 本地：`npm run package`。完整步骤见 [RELEASING.md](RELEASING.md)。
+  `dist/cowork-framework-<version>.zip`、`.sha256` 和可安装的
+  `dist/cowork-framework-<version>.tgz` bundle，自动创建 GitHub Release。
+- 本地：`npm run package` 和 `npm run pack`。
+  完整步骤见 [RELEASING.md](RELEASING.md)；bundle 安装/发布矩阵见
+  [docs/publishing.zh.md](docs/publishing.zh.md)。
 
 ---
 

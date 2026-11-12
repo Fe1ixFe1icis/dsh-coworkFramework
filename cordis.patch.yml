@@ -1,0 +1,23 @@
+# cowork — DSH bundle layer
+#
+# This file is applied automatically when the package is installed as a bundle
+# (`dsh plugin --profile <profile> add <package>`), before the profile's own
+# `cordis.patch.yml`.
+#
+# repoPath / agent are intentionally omitted: the plugin resolves them, in order,
+# from COWORK_REPO / COWORK_AGENT, then ~/.cowork/config.json (written by
+# `cowork init` / `cowork join`), then the clone's .cowork/config.json.
+# To pin them for one profile, override this row in the profile's own patch:
+#
+#   - id: cowork
+#     config:
+#       repoPath: 'D:/work/project'
+#       agent: 'A'
+#       notify: true
+#
+# A later layer replaces the whole `config` object, so restate every key you need.
+- insert:
+    - id: cowork
+      name: '@cowork/framework'
+      config:
+        notify: true

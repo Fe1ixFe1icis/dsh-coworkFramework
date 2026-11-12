@@ -81,7 +81,7 @@ git clone <your-repo-url> D:\tools\cowork-framework
 cd D:\tools\cowork-framework
 ```
 
-Or download `cowork-framework-0.1.0.zip` from the GitHub **Releases** page and extract it.
+Or download `cowork-framework-<version>.zip` from the GitHub **Releases** page and extract it.
 
 ### 2. Machine A: create the shared workspace
 
@@ -118,6 +118,50 @@ share once in Explorer and save them, or use `net use`.
 
 ### 4. Install the DSH plugin
 
+cowork is packaged as a DSH **bundle**: `package.json` declares `dsh.bundle.patch`, so
+`dsh plugin add` installs the package and activates its `cordis.patch.yml` automatically.
+
+#### Option A — bundle (recommended)
+
+```powershell
+dsh plugin --profile web add D:\tools\cowork-framework
+dsh --profile web --dump-config        # should contain "- id: cowork"
+```
+
+Or use the helper, which also installs the `cowork` command:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\install\install-bundle.ps1 -Profile web
+```
+
+`dsh plugin add` also accepts an npm package, a GitHub repo, or a tarball:
+
+```powershell
+dsh plugin --profile web add @cowork/framework
+dsh plugin --profile web add github:Fe1ixFe1icis/dsh-coworkFramework#v0.2.0
+dsh plugin --profile web add .\cowork-framework-<version>.tgz
+```
+
+The plugin resolves `repoPath` / `agent` from `COWORK_REPO` / `COWORK_AGENT`, then
+`~/.cowork/config.json` (written by `cowork init` / `cowork join`), then the clone's
+`.cowork/config.json`. To pin values for one profile, override the row by id in the profile's
+`cordis.patch.yml`:
+
+```yaml
+- id: cowork
+  config:
+    repoPath: 'D:/work/project'
+    agent: 'A'
+    notify: true
+```
+
+A later layer replaces the whole `config` object, so restate every key you need. Uninstall with
+`dsh plugin --profile web remove @cowork/framework`.
+
+#### Option B — offline/manual install
+
+The older script copies the package into the profile and edits `cordis.patch.yml` directly:
+
 ```powershell
 cd D:\tools\cowork-framework
 powershell -NoProfile -ExecutionPolicy Bypass -File .\install\install-dsh-plugin.ps1 `
@@ -126,17 +170,19 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\install\install-dsh-plugin
   -Agent A
 ```
 
-Use `-Agent B` and B's clone path on machine B. The script:
+Use `-Agent B` and B's clone path on machine B. The script copies the package into
+`~/.dsh/profiles/<profile>/node_modules/@cowork/framework`, appends an idempotent entry to
+`cordis.patch.yml` (with a timestamped backup), validates the module import and
+`dsh --dump-config`, and installs the CLI shim. Uninstall with
+`install\uninstall-dsh-plugin.ps1 -Profile <profile>`.
 
-- copies the package into `~/.dsh/profiles/<profile>/node_modules/@cowork/framework`;
-- appends an idempotent entry to `cordis.patch.yml` (with a timestamped backup);
-- validates the module import and `dsh --dump-config`;
-- installs the `cowork` CLI shim unless `-SkipCli` is passed.
+> Do not use both options at once: they would create two `id: cowork` rows. Migrate by running
+> the uninstall script first. Do not hand-delete a partial patch block, because an empty patch
+> file must remain a YAML array (`[]`).
 
 If the profile has live patch reload, the plugin hot-loads; otherwise restart DSH. Verify with
 `dsh --profile <profile> --dump-config` or by checking that `cowork_status` appears in a new
-session. Uninstall with `install\uninstall-dsh-plugin.ps1 -Profile <profile>`; do not hand-delete a
-partial block, because an empty patch file must remain a YAML array (`[]`).
+session. Full publishing and installation guide: [docs/publishing.zh.md](docs/publishing.zh.md).
 
 ### 5. Daily workflow
 
@@ -284,8 +330,11 @@ Tests isolate global state through `COWORK_HOME` and never touch your real `~/.c
 - `.github/workflows/ci.yml` runs `npm run check`, `npm test`, and `npm run test:plugin` on
   Ubuntu and Windows with Node 20/22, and uploads a source package.
 - `.github/workflows/release.yml` runs on `v*` tags, builds
-  `dist/cowork-framework-<version>.zip` + `.sha256`, and creates a GitHub Release.
-- Locally: `npm run package`. See [RELEASING.md](RELEASING.md).
+  `dist/cowork-framework-<version>.zip` + `.sha256` and the installable
+  `dist/cowork-framework-<version>.tgz` bundle, and creates a GitHub Release.
+- Locally: `npm run package` and `npm run pack`. See
+  [RELEASING.md](RELEASING.md) and the bundle publishing guide
+  [docs/publishing.zh.md](docs/publishing.zh.md).
 
 ---
 

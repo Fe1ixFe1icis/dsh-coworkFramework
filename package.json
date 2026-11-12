@@ -18,12 +18,18 @@
   "bin": {
     "cowork": "./bin/cowork.mjs"
   },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
   "files": [
     "bin",
     "src",
     "install",
     "docs",
     "scripts",
+    "cordis.patch.yml",
     "README.md",
     "README.zh.md",
     "LICENSE",
@@ -31,7 +37,8 @@
     "AGENTS.md"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=20",
+    "dsh": ">=0.2.2-rc.1 <0.3.0"
   },
   "scripts": {
     "check": "node scripts/check.mjs",
@@ -41,7 +48,8 @@
     "test:plugin": "node tests/plugin.test.mjs",
     "test:smb": "node tests/smb-smoke.mjs",
     "test:all": "npm run check && npm test && npm run test:plugin",
-    "package": "node scripts/package-release.mjs"
+    "package": "node scripts/package-release.mjs",
+    "pack": "node -e \"require('node:fs').mkdirSync('dist',{recursive:true})\" && npm pack --pack-destination dist"
   },
   "keywords": [
     "deepseek-harness",
@@ -55,6 +63,11 @@
     "plugin"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Fe1ixFe1icis/dsh-coworkFramework.git"
+  },
+  "homepage": "https://github.com/Fe1ixFe1icis/dsh-coworkFramework#readme",
   "publishConfig": {
     "access": "public"
   },

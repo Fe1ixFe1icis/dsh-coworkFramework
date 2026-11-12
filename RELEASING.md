@@ -14,15 +14,15 @@ git remote add origin <your-repository-url>
 git push -u origin main
 ```
 
-Optionally add `repository` and `homepage` to `package.json` so the package metadata points
-at the public project:
+`package.json` already points `repository` and `homepage` at
+`https://github.com/Fe1ixFe1icis/dsh-coworkFramework`; update both if the repository is renamed:
 
 ```json
 "repository": {
   "type": "git",
-  "url": "https://github.com/<owner>/cowork.git"
+  "url": "https://github.com/Fe1ixFe1icis/dsh-coworkFramework.git"
 },
-"homepage": "https://github.com/<owner>/cowork#readme"
+"homepage": "https://github.com/Fe1ixFe1icis/dsh-coworkFramework#readme"
 ```
 
 The release workflow publishes GitHub release assets only; it does not publish to npm. If
@@ -34,7 +34,9 @@ policy restricts token permissions, allow that permission for this workflow befo
 ## Versioning
 
 Use Semantic Versioning. For `0.x` releases, a minor bump may include breaking changes —
-call them out in the changelog. The version must be updated in **both** places and must
+call them out in the changelog. `v0.1.0` was the initial public release; the DSH bundle
+changes the install surface, so publish it as `0.2.0` / `v0.2.0` rather than moving the
+existing tag. The version must be updated in **both** places and must
 match:
 
 1. `version` in `package.json` (also drives the archive name).
@@ -96,11 +98,24 @@ appropriate.
 
 7. **Wait for the release workflow.** Pushing a `v*` tag triggers
    `.github/workflows/release.yml` on `ubuntu-latest`. The workflow checks out the full
-   history, sets up Node 20, runs `npm run check` and `npm test`, runs `npm run package`,
-   and creates the GitHub Release with generated release notes. It uploads
-   `dist/*.zip` and `dist/*.sha256` with `softprops/action-gh-release@v2`.
+   history, sets up Node 20, runs `npm run check` and `npm test`, builds the source archive
+   and the installable bundle tarball, and creates the GitHub Release with generated release
+   notes. It uploads `dist/*.zip`, `dist/*.sha256`, and `dist/*.tgz` with
+   `softprops/action-gh-release@v2`.
 
 8. **Verify the published release** (see below).
+
+### Publishing the DSH bundle
+
+The same tag produces an installable bundle tarball (`npm pack`), so users can install with:
+
+```powershell
+dsh plugin --profile web add https://github.com/Fe1ixFe1icis/dsh-coworkFramework/releases/download/vX.Y.Z/cowork-framework-X.Y.Z.tgz
+```
+
+or, if published to npm, with `dsh plugin --profile web add @cowork/framework`.
+The full matrix (local path, GitHub, npm, tarball), the npm scope caveat, and the
+`dsh-plugin` discovery checklist are in [docs/publishing.zh.md](docs/publishing.zh.md).
 
 ## Manual release without Actions
 
@@ -111,10 +126,12 @@ the GitHub CLI authenticated (`gh auth status`):
 npm run check
 npm test
 npm run package
+npm run pack
 Get-ChildItem .\dist
 gh release create vX.Y.Z `
   "dist/cowork-framework-X.Y.Z.zip" `
   "dist/cowork-framework-X.Y.Z.zip.sha256" `
+  "dist/cowork-framework-X.Y.Z.tgz" `
   --title "cowork vX.Y.Z" `
   --generate-notes
 ```
@@ -126,7 +143,7 @@ everything you want in the archive, and confirm both file names match the versio
 
 ## Verify the release
 
-- The GitHub Release page lists exactly two assets: the zip and the `.sha256` file.
+- The GitHub Release page lists the source zip, its `.sha256`, and the installable `.tgz` bundle.
 - The checksum matches the downloaded archive:
 
   ```powershell

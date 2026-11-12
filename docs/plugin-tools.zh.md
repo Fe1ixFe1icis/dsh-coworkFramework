@@ -7,6 +7,10 @@
 > `repoPath`（本地克隆路径）、`agent`（本机身份）、`notify`（是否启用步进提醒，默认 true）、
 > `fetchOnStatus`（`cowork_status` 是否默认联网 fetch，默认 false）。
 > 未在插件配置里写的项会回退到 `~/.cowork/config.json`，再回退到仓库 `.cowork/config.json`。
+>
+> 推荐用 bundle 安装：`dsh plugin --profile web add <包名/路径/tarball>`。bundle 自带的
+> `cordis.patch.yml` 只设置 `notify`，`repoPath` / `agent` 交给上面的回退链；需要固定值时
+> 再在 profile 的 `cordis.patch.yml` 里按 `id: cowork` 覆盖。
 
 ## 推荐工作流
 

@@ -50,6 +50,16 @@ async function main() {
     process.stderr.write('警告：工作区有未提交改动，发布包只包含已提交内容（HEAD）。\n')
   }
 
+  // 发布包必须带上 bundle 层；git archive 只归档已提交内容，未提交的 patch 会被静默漏掉。
+  const bundlePatch = packageJson.dsh?.bundle?.patch
+  if (bundlePatch) {
+    const patchRelative = String(bundlePatch).replace(/^\.\//, '')
+    const tracked = await git(['ls-files', '--error-unmatch', patchRelative]).then(() => true, () => false)
+    if (!tracked) {
+      throw new Error(`${patchRelative} 尚未提交；发布包会缺少 DSH bundle 层。请先 git add/commit。`)
+    }
+  }
+
   await fs.mkdir(outDir, { recursive: true })
   await fs.rm(zipPath, { force: true })
   await fs.rm(shaPath, { force: true })
@@ -71,7 +81,7 @@ async function main() {
   process.stdout.write(`已生成：${path.relative(root, zipPath)}（${sizeKb} KB，ref=${ref}）\n`)
   process.stdout.write(`SHA-256：${hash}\n`)
   process.stdout.write(`校验文件：${path.relative(root, shaPath)}\n`)
-  process.stdout.write('GitHub Release 时把这两个文件一起上传即可。\n')
+  process.stdout.write('GitHub Release 时上传 zip + .sha256；再运行 npm run pack 生成可安装的 .tgz 一起上传。\n')
 }
 
 await main()

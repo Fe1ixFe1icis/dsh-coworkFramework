@@ -66,7 +66,7 @@ cowork doctor
 任选一种：
 
 - 在 B 上 `git clone <仓库地址> D:\tools\cowork-framework`；
-- 从 GitHub Releases 下载 `cowork-framework-0.1.0.zip` 解压；
+- 从 GitHub Releases 下载 `cowork-framework-<version>.zip` 解压；
 - 在 A 上打包后复制到共享目录：
 
   ```powershell
@@ -110,20 +110,33 @@ cowork doctor
 
 ## 第 3 步：在 B 上安装 DSH 插件
 
+推荐以 DSH bundle 安装（一条命令，自动写 profile 的 bundles 并应用包内 `cordis.patch.yml`）：
+
 ```powershell
 cd D:\tools\cowork-framework
+dsh plugin --profile web add $PWD
+# 或者用脚本（会顺带安装 cowork 命令）：
+powershell -NoProfile -ExecutionPolicy Bypass -File .\install\install-bundle.ps1 -Profile web
+```
+
+第 2 步的 `cowork join` 已经写入 `~\.cowork\config.json`，插件会自动解析 `repoPath` / `agent`，
+不需要再传 `-RepoPath` / `-Agent`。验证：
+
+```powershell
+dsh --profile web --dump-config | Select-String cowork
+```
+
+旧版兜底（DSH 版本较老或完全离线）：
+
+```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\install\install-dsh-plugin.ps1 `
   -Profile web `
   -RepoPath "D:\work\project" `
   -Agent B
 ```
 
-脚本会：
-
-- 把插件复制到 `%USERPROFILE%\.dsh\profiles\web\node_modules\@cowork\framework`；
-- 在 `cordis.patch.yml` 插入插件条目（自动备份原文件）；
-- 用 `dsh --profile web --dump-config` 校验配置树；
-- 安装 `cowork` 命令（除非 `-SkipCli`）。
+它会复制插件到 profile 的 `node_modules`、在 `cordis.patch.yml` 插入条目（自动备份），
+并用 `dsh --profile web --dump-config` 校验；不要和 bundle 方式同时使用。
 
 生效方式：
 

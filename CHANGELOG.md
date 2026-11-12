@@ -30,6 +30,12 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Step reminders: before an agent step, the plugin injects unread messages and
   review-ready tasks as a `<system-reminder>`, suppresses duplicate reminders for the same
   summary, and can be disabled with `notify: false`.
+- Installable DSH bundle: `package.json` declares `dsh.bundle.patch`, `cordis.patch.yml`
+  inserts the `cowork` row, and `dsh plugin --profile <profile> add <package>` installs and
+  activates it without hand-editing the profile. `install/install-bundle.ps1` wraps the
+  command and verifies the composed config; `install/uninstall-dsh-plugin.ps1` now detects
+  bundle installs and removes them through `dsh plugin remove`; releases also ship an npm
+  `.tgz`.
 - Install and lifecycle scripts under `install/`: install/uninstall the DSH plugin with a
   `cordis.patch.yml` backup and config validation, install the `cowork` command on `PATH`,
   package the framework for another machine, and prepare local DSH test dependencies.

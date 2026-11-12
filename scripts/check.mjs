@@ -94,6 +94,31 @@ async function main() {
     pass(`版本一致：${packageJson.version}`)
   }
 
+  // 2.5 DSH bundle 清单：dsh.bundle.patch 必须存在，且 patch 插入的是本包
+  const bundlePatch = packageJson.dsh?.bundle?.patch
+  if (!bundlePatch) {
+    fail('package.json 缺少 dsh.bundle.patch（无法作为 DSH bundle 安装）')
+  } else {
+    const patchRelative = String(bundlePatch).replace(/^\.\//, '')
+    const patchPath = path.join(root, patchRelative)
+    const patchExists = await fs.stat(patchPath).then(() => true, () => false)
+    if (!patchExists) {
+      fail(`dsh.bundle.patch 指向的文件不存在：${patchRelative}`)
+    } else {
+      const patchText = await fs.readFile(patchPath, 'utf8')
+      if (!/^\s*-\s*insert:\s*$/m.test(patchText)) fail(`${patchRelative} 缺少顶层 "- insert:" 行`)
+      if (!/^\s*-\s*id:\s*cowork\s*$/m.test(patchText)) fail(`${patchRelative} 缺少 "id: cowork"`)
+      if (!patchText.includes(`name: '${packageJson.name}'`)) {
+        fail(`${patchRelative} 的 name 与 package.json 的 ${packageJson.name} 不一致`)
+      }
+      if (!Array.isArray(packageJson.files) || !packageJson.files.includes(patchRelative)) {
+        fail(`package.json 的 files 未包含 ${patchRelative}（npm pack 会漏掉 bundle patch）`)
+      }
+      if (!packageJson.engines?.dsh) fail('package.json 缺少 engines.dsh 兼容范围')
+      if (!failures) pass(`DSH bundle：${patchRelative} 已声明并被 files 包含`)
+    }
+  }
+
   // 3. 相对链接
   let checkedLinks = 0
   const markdownFiles = files.filter((file) => file.endsWith('.md'))
@@ -121,6 +146,7 @@ async function main() {
     'SECURITY.md',
     'AGENTS.md',
     'package.json',
+    'cordis.patch.yml',
     '.gitignore',
     '.gitattributes',
     '.github/workflows/ci.yml',
@@ -129,6 +155,8 @@ async function main() {
     'src/plugin.mjs',
     'bin/cowork.mjs',
     'install/install-dsh-plugin.ps1',
+    'install/install-bundle.ps1',
+    'docs/publishing.zh.md',
     'scripts/package-release.mjs',
   ]
   for (const relative of required) {

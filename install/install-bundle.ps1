@@ -2,7 +2,7 @@
 #
 # Unlike the legacy install-dsh-plugin.ps1, this script does not copy files or edit the
 # profile's cordis.patch.yml by hand. It runs `dsh plugin add`, which installs the package
-# and records @cowork/framework in the profile's dsh.profile.bundles. The bundle's own
+# and records dsh-cowork-framework in the profile's dsh.profile.bundles. The bundle's own
 # cordis.patch.yml is then applied automatically.
 #
 # Usage (from the framework repository root):
@@ -10,7 +10,7 @@
 #
 # Install a published package, tarball, or GitHub repo instead:
 #   ... -Spec "@scope/cowork"
-#   ... -Spec ".\cowork-framework-0.1.0.tgz"
+#   ... -Spec ".\dsh-cowork-framework-0.1.0.tgz"
 #   ... -Spec "github:owner/cowork#v0.1.0"
 param(
   [string]$Profile = "web",
@@ -57,7 +57,7 @@ if (-not (Test-Path (Join-Path $frameworkSource "cordis.patch.yml"))) {
 if ($LASTEXITCODE -ne 0) {
   throw "dsh plugin add failed (exit code $LASTEXITCODE). Check pnpm and network access, or run: dsh plugin --profile $Profile install"
 }
-Write-Host "Installed bundle: @cowork/framework" -ForegroundColor Green
+Write-Host "Installed bundle: dsh-cowork-framework" -ForegroundColor Green
 
 # 2) Verify the composed config without starting the GUI.
 if (-not $SkipVerify) {
@@ -115,5 +115,5 @@ Write-Host ""
 Write-Host "Activation:" -ForegroundColor Green
 Write-Host "  - With live patch reload the plugin hot-loads; otherwise restart dsh."
 Write-Host "  - Verify: dsh --profile $Profile --dump-config should show id: cowork."
-Write-Host "  - Uninstall: dsh plugin --profile $Profile remove @cowork/framework"
+Write-Host "  - Uninstall: dsh plugin --profile $Profile remove dsh-cowork-framework"
 Write-Host "  - If the legacy installer was used before, run uninstall-dsh-plugin.ps1 first to avoid duplicate id: cowork rows."

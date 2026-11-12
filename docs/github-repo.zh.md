@@ -63,10 +63,10 @@
 
 | 名称 | 说明 |
 |---|---|
-| `cowork` | **首选**。与 README、包名主题一致，简短 |
-| `dsh-cowork` | 备选。带生态前缀，GitHub 搜索更容易命中 DSH 用户 |
-| `cowork-framework` | 与包名 `@cowork/framework` 完全一致，略长 |
-| `cowork-lan` | 强调局域网场景 |
+| `dsh-coworkFramework` | **当前实际仓库名**（GitHub: `Fe1ixFe1icis/dsh-coworkFramework`） |
+| `dsh-cowork-framework` | **npm 包名**；也是更规范的仓库改名候选 |
+| `cowork` | 简短，但过于通用，GitHub 搜索容易撞名 |
+| `dsh-cowork` | 已被其他 npm 包占用，不建议 |
 
 > `package.json` 的 `repository` / `homepage` 已指向 `Fe1ixFe1icis/dsh-coworkFramework`；
 > 如果仓库改名，记得同步这两项和文档里的 GitHub 示例。
@@ -134,7 +134,7 @@ cowork 把共享目录从「工作区」降级为「协调区」：代码只通�
 |---|---|---|
 | git 层 | `<share>/repo.git` 裸仓库 + 每台机器的本地克隆 | 代码的唯一事实来源是 `main`；任务分支 `agent/<身份>/<任务号>` 隔离工作 |
 | 任务板层 | `board/board.json`、`members/`、`events.jsonl`、`.board.lock` | 跨机器记忆：任务状态、认领人、消息、心跳、审计 |
-| agent 层 | DSH 插件 `@cowork/framework` | 13 个 `cowork_*` 工具 + 系统提示段 + 步进提醒，把协议变成模型可执行的工具 |
+| agent 层 | DSH 插件 `dsh-cowork-framework` | 13 个 `cowork_*` 工具 + 系统提示段 + 步进提醒，把协议变成模型可执行的工具 |
 
 ### 5.3 一次完整的协作闭环
 

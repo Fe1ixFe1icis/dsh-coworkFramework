@@ -110,10 +110,10 @@ appropriate.
 The same tag produces an installable bundle tarball (`npm pack`), so users can install with:
 
 ```powershell
-dsh plugin --profile web add https://github.com/Fe1ixFe1icis/dsh-coworkFramework/releases/download/vX.Y.Z/cowork-framework-X.Y.Z.tgz
+dsh plugin --profile web add https://github.com/Fe1ixFe1icis/dsh-coworkFramework/releases/download/vX.Y.Z/dsh-cowork-framework-X.Y.Z.tgz
 ```
 
-or, if published to npm, with `dsh plugin --profile web add @cowork/framework`.
+or, if published to npm, with `dsh plugin --profile web add dsh-cowork-framework`.
 The full matrix (local path, GitHub, npm, tarball), the npm scope caveat, and the
 `dsh-plugin` discovery checklist are in [docs/publishing.zh.md](docs/publishing.zh.md).
 
@@ -131,7 +131,7 @@ Get-ChildItem .\dist
 gh release create vX.Y.Z `
   "dist/cowork-framework-X.Y.Z.zip" `
   "dist/cowork-framework-X.Y.Z.zip.sha256" `
-  "dist/cowork-framework-X.Y.Z.tgz" `
+  "dist/dsh-cowork-framework-X.Y.Z.tgz" `
   --title "cowork vX.Y.Z" `
   --generate-notes
 ```

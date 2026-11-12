@@ -18,6 +18,6 @@
 # A later layer replaces the whole `config` object, so restate every key you need.
 - insert:
     - id: cowork
-      name: '@cowork/framework'
+      name: 'dsh-cowork-framework'
       config:
         notify: true

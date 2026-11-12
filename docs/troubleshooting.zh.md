@@ -197,7 +197,7 @@ cowork sync          # 在作者的任务分支上 rebase 到最新 main
 1. 安装脚本是否成功：`dsh --profile web --dump-config | Select-String cowork` 应能看到 `- id: cowork`；
 2. `dsh --profile web --dump-config` 失败 → `cordis.patch.yml` YAML 非法（常见：空 profile 的 `[]` 直接追加）。
    恢复备份 `profiles\web\cordis.patch.yml.bak-*`，用新版安装脚本重装；
-3. 插件目录存在：`%USERPROFILE%\.dsh\profiles\web\node_modules\@cowork\framework\src\plugin.mjs`；
+3. 插件目录存在：`%USERPROFILE%\.dsh\profiles\web\node_modules\dsh-cowork-framework\src\plugin.mjs`；
 4. 重启 dsh（关掉运行的 dsh 窗口后重新 `dsh web`）。profile 的 HMR 会热加载补丁改动，
    但**如果插件文件本身是复制进去的，首次最好重启一次**；
 5. 看 dsh 启动日志/控制台是否有 `cowork: 插件已加载` 或加载错误。
@@ -209,7 +209,7 @@ profile 补丁里 `repoPath` 缺失或写错：
 ```yaml
 - insert:
     - id: cowork
-      name: '@cowork/framework'
+      name: 'dsh-cowork-framework'
       config:
         repoPath: 'D:/work/project'
         agent: 'A'
@@ -231,7 +231,7 @@ cowork 声明了 `engines.dsh: ">=0.2.2-rc.1 <0.3.0"`。当前 dsh 版本超出�
 - 确认插件仍兼容、只是版本号不匹配时，可以按 dsh 的精确版本豁免流程处理：
 
   ```powershell
-  dsh plugin --profile web allow-version @cowork/framework@0.1.0 --dsh-version <当前版本> --accept-risk
+  dsh plugin --profile web allow-version dsh-cowork-framework@0.2.0 --dsh-version <当前版本> --accept-risk
   ```
 
   这是有风险的操作，只在明确知道兼容性时使用；`revoke-version` 可撤销。
@@ -245,10 +245,10 @@ cowork 声明了 `engines.dsh: ">=0.2.2-rc.1 <0.3.0"`。当前 dsh 版本超出�
   或者从 `~/.dsh/profiles/web/package.json` 的 `dsh.profile.bundles` 里删除该项后重启（会失去对应实验功能）。
 - 安装脚本现已把这类警告单独列出、继续完成安装，不会再让它看起来像安装失败。
 
-### 现象：安装脚本校验时报 `PLUGIN_IMPORT_FAIL: Cannot find package '@cowork/framework'`
+### 现象：安装脚本校验时报 `PLUGIN_IMPORT_FAIL: Cannot find package 'dsh-cowork-framework'`
 
 说明插件包没复制到位，或脚本在错误的目录做检查。重跑安装脚本（幂等）；
-仍失败时检查 `profiles\<profile>\node_modules\@cowork\framework\package.json` 是否存在。
+仍失败时检查 `profiles\<profile>\node_modules\dsh-cowork-framework\package.json` 是否存在。
 
 ### 现象：改了插件源码想立刻生效
 
@@ -281,7 +281,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\install\uninstall-dsh-plug
 
 手工步骤（如果想自己删）：
 1. 删除 `profiles\<profile>\cordis.patch.yml` 中 `# >>> cowork plugin` 到 `# <<< cowork plugin` 的整块；
-2. 删除 `profiles\<profile>\node_modules\@cowork\framework`；
+2. 删除 `profiles\<profile>\node_modules\dsh-cowork-framework`；
 3. **如果文件删完只剩注释，必须补一行 `[]`**（patch 层必须是 YAML 数组），否则下次启动 dsh 会报
    `overlay ... must be a top-level YAML array of loader patch entries`；
 4. 运行中的 dsh 会自动热卸载；不放心就重启。

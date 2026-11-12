@@ -15,7 +15,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   hand-editing the profile.
 - `install/install-bundle.ps1` wraps the bundle install, verifies `--dump-config`,
   and prints where `repoPath` / `agent` will come from.
-- Release workflow now also builds `dist/cowork-framework-<version>.tgz`; `npm run pack`
+- Release workflow now also builds `dist/dsh-cowork-framework-<version>.tgz`; `npm run pack`
   produces the same installable tarball locally.
 - `install/uninstall-dsh-plugin.ps1` detects bundle installs and removes them through
   `dsh plugin remove`, then cleans any legacy manual patch block.

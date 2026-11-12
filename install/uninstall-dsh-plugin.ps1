@@ -1,6 +1,6 @@
 ﻿# 从 dsh profile 卸载 cowork 插件（安全版：不会把 cordis.patch.yml 变成非法 YAML）
 # 支持两种安装方式：
-#   - bundle：profile 的 dsh.profile.bundles 里有 @cowork/framework → 用 dsh plugin remove
+#   - bundle：profile 的 dsh.profile.bundles 里有 dsh-cowork-framework → 用 dsh plugin remove
 #   - 旧版手工安装：profile 的 cordis.patch.yml 里有 # >>> cowork plugin 块 → 删块 + 删包
 # 用法：
 #   powershell -NoProfile -ExecutionPolicy Bypass -File .\install\uninstall-dsh-plugin.ps1 -Profile web
@@ -17,7 +17,7 @@ if (-not $DshHome -or $DshHome.Trim() -eq "") {
 }
 $profileDir = Join-Path $DshHome "profiles\$Profile"
 $patchFile = Join-Path $profileDir "cordis.patch.yml"
-$pluginDir = Join-Path $profileDir "node_modules\@cowork\framework"
+$pluginDir = Join-Path $profileDir "node_modules\dsh-cowork-framework"
 $profilePackage = Join-Path $profileDir "package.json"
 
 Write-Host "== 卸载 cowork 插件 ==" -ForegroundColor Cyan
@@ -29,7 +29,7 @@ if (Test-Path $profilePackage) {
   try {
     $profileJson = Get-Content $profilePackage -Raw | ConvertFrom-Json
     $bundles = @($profileJson.dsh.profile.bundles)
-    if ($bundles -contains "@cowork/framework") { $isBundle = $true }
+    if ($bundles -contains "dsh-cowork-framework") { $isBundle = $true }
   } catch {
     Write-Warning "读取 profile package.json 失败（继续按手工安装处理）：$profilePackage"
   }
@@ -37,12 +37,12 @@ if (Test-Path $profilePackage) {
 if ($isBundle) {
   $dsh = Get-Command dsh -ErrorAction SilentlyContinue
   if (-not $dsh) {
-    throw "检测到 bundle 安装，但 PATH 上没有 dsh。请运行：dsh plugin --profile $Profile remove @cowork/framework"
+    throw "检测到 bundle 安装，但 PATH 上没有 dsh。请运行：dsh plugin --profile $Profile remove dsh-cowork-framework"
   }
-  Write-Host "检测到 bundle 安装，执行：dsh plugin --profile $Profile remove @cowork/framework"
-  & dsh plugin --profile $Profile remove "@cowork/framework"
+  Write-Host "检测到 bundle 安装，执行：dsh plugin --profile $Profile remove dsh-cowork-framework"
+  & dsh plugin --profile $Profile remove "dsh-cowork-framework"
   if ($LASTEXITCODE -ne 0) {
-    throw "dsh plugin remove 失败（退出码 $LASTEXITCODE）。请手动执行：dsh plugin --profile $Profile remove @cowork/framework"
+    throw "dsh plugin remove 失败（退出码 $LASTEXITCODE）。请手动执行：dsh plugin --profile $Profile remove dsh-cowork-framework"
   }
   Write-Host "已从 profile 移除 bundle。"
 }

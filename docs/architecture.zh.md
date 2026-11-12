@@ -113,7 +113,7 @@ main ──●──────────────●───────
 
 ## 4. DSH 插件
 
-插件是一个普通 ESM 包（`@cowork/framework`），入口 `src/plugin.mjs`，导出：
+插件是一个普通 ESM 包（`dsh-cowork-framework`），入口 `src/plugin.mjs`，导出：
 
 ```js
 export const name = 'cowork'
@@ -143,7 +143,7 @@ export function apply(ctx, config) { ... }
 - `@deepseek-ai/schemastery`（`Config` schema）
 - `@deepseek-ai/dsh-llm`（`createUserMessage`，懒加载，缺失则关闭步进提醒）
 
-安装位置在 `~/.dsh/profiles/<profile>/node_modules/@cowork/framework`，
+安装位置在 `~/.dsh/profiles/<profile>/node_modules/dsh-cowork-framework`，
 Node 解析会向上找到 `~/.dsh/profiles/node_modules` 里的 `@deepseek-ai/*`，因此不需要 pnpm 安装、离线可用。
 
 ### 4.2 安装与热加载
@@ -156,7 +156,7 @@ Node 解析会向上找到 `~/.dsh/profiles/node_modules` 里的 `@deepseek-ai/*
   ```yaml
   - insert:
       - id: cowork
-        name: '@cowork/framework'
+        name: 'dsh-cowork-framework'
         config:
           notify: true
   ```

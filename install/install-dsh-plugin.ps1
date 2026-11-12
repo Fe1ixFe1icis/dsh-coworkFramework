@@ -20,7 +20,7 @@ if (-not $DshHome -or $DshHome.Trim() -eq "") {
   $DshHome = if ($env:DSH_HOME) { $env:DSH_HOME } else { Join-Path $env:USERPROFILE ".dsh" }
 }
 $profileDir = Join-Path $DshHome "profiles\$Profile"
-$targetDir = Join-Path $profileDir "node_modules\@cowork\framework"
+$targetDir = Join-Path $profileDir "node_modules\dsh-cowork-framework"
 $patchFile = Join-Path $profileDir "cordis.patch.yml"
 
 Write-Host "== cowork 插件安装 ==" -ForegroundColor Cyan
@@ -94,7 +94,7 @@ $block = @()
 $block += "# >>> cowork plugin（由 install-dsh-plugin.ps1 生成；删除本块并重启 dsh 即可卸载）"
 $block += "- insert:"
 $block += "    - id: cowork"
-$block += "      name: '@cowork/framework'"
+$block += "      name: 'dsh-cowork-framework'"
 $block += "      config:"
 if ($yamlPath) { $block += "        repoPath: '$(Escape-Yaml $yamlPath)'" }
 if ($yamlAgent) { $block += "        agent: '$(Escape-Yaml $yamlAgent)'" }
@@ -107,7 +107,7 @@ Write-Host "已写入插件条目：$patchFile"
 # 4) 校验：模块可解析 + 配置树能组合
 $nodeCheck = @"
 try {
-  const p = await import('@cowork/framework')
+  const p = await import('dsh-cowork-framework')
   if (typeof p.apply !== 'function') throw new Error('插件缺少 apply 导出')
   console.log('PLUGIN_IMPORT_OK')
 } catch (e) { console.error('PLUGIN_IMPORT_FAIL: ' + e.message); process.exit(1) }

@@ -130,7 +130,7 @@ Heartbeats need no lock, because each machine writes only `<share>/board/members
 
 ## 4. DSH plugin
 
-The plugin is a plain ESM package (`@cowork/framework`) whose entry point is `src/plugin.mjs`:
+The plugin is a plain ESM package (`dsh-cowork-framework`) whose entry point is `src/plugin.mjs`:
 
 ```js
 export const name = 'cowork'
@@ -155,7 +155,7 @@ The plugin bundles no dependencies and reuses the packages DSH already ships:
 - `@deepseek-ai/schemastery` — the `Config` schema
 - `@deepseek-ai/dsh-llm` — `createUserMessage`, loaded lazily; if the export is missing, step reminders switch off instead of failing the plugin load
 
-The plugin is installed at `~/.dsh/profiles/<profile>/node_modules/@cowork/framework`. Node resolves `@deepseek-ai/*` upwards to `~/.dsh/profiles/node_modules`, so no `pnpm install` is needed and the install works offline.
+The plugin is installed at `~/.dsh/profiles/<profile>/node_modules/dsh-cowork-framework`. Node resolves `@deepseek-ai/*` upwards to `~/.dsh/profiles/node_modules`, so no `pnpm install` is needed and the install works offline.
 
 ### 4.2 Installation and hot reload
 
@@ -164,7 +164,7 @@ The plugin is installed at `~/.dsh/profiles/<profile>/node_modules/@cowork/frame
   ```yaml
   - insert:
       - id: cowork
-        name: '@cowork/framework'
+        name: 'dsh-cowork-framework'
         config:
           notify: true
   ```

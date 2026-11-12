@@ -28,7 +28,7 @@ cowork 的 `package.json` 已经声明：
 ```yaml
 - insert:
     - id: cowork
-      name: '@cowork/framework'
+      name: 'dsh-cowork-framework'
       config:
         notify: true
 ```
@@ -57,9 +57,9 @@ dsh --profile bundle-test --dump-config | Select-String cowork
 应看到：
 
 ```text
-# == @cowork/framework
+# == dsh-cowork-framework
 - id: cowork
-  name: '@cowork/framework'
+  name: 'dsh-cowork-framework'
   config:
     notify: true
 ```
@@ -134,28 +134,28 @@ npm publish --access public
 用户安装：
 
 ```powershell
-dsh plugin --profile web add @cowork/framework
+dsh plugin --profile web add dsh-cowork-framework
 ```
 
-**注意包名**：`@cowork/framework` 是 scoped 包，发布者必须拥有 `@cowork` 这个 npm scope。
-如果没有，二选一：
+**关于包名**：仓库使用 unscoped 的 `dsh-cowork-framework`。如果你想换成自己的名字：
 
-- 改成 unscoped 名称，例如 `dsh-cowork`；
-- 改成自己的 scope，例如 `@your-name/cowork`。
+- 先确认新名字可用：`npm view <new-name> version`（返回 404 通常表示可用）；
+- 同步修改 `package.json` 的 `name` 和 `cordis.patch.yml` 里的 `name:`；
+- 再跑 `npm run check`，确保两处一致。
 
-改名后要同步改 `cordis.patch.yml` 里的 `name:`，否则 profile 解析不到插件。
+`dsh-cowork` 这个名称已经被别人占用，不要使用。
 
 ### 方式 D：tarball / GitHub Release
 
 ```powershell
 npm run pack
-# 生成 dist\cowork-framework-0.2.0.tgz（按发布版本）
+# 生成 dist\dsh-cowork-framework-0.2.0.tgz（按发布版本）
 ```
 
 把 `.tgz` 上传到 GitHub Release，用户：
 
 ```powershell
-dsh plugin --profile web add .\cowork-framework-0.2.0.tgz
+dsh plugin --profile web add .\dsh-cowork-framework-0.2.0.tgz
 ```
 
 tarball 安装的是预构建内容，不需要构建权限，也不依赖 GitHub 可达性；适合内网/离线分发。
@@ -256,7 +256,7 @@ dsh --profile web --dump-config | Select-String cowork
 git switch main
 git pull --ff-only
 npm run package          # dist/cowork-framework-<version>.zip + .sha256
-npm run pack                       # dist/cowork-framework-<version>.tgz
+npm run pack                       # dist/dsh-cowork-framework-<version>.tgz
 
 git tag -a v0.2.0 -m "cowork v0.2.0"
 git push origin main --tags
@@ -269,7 +269,7 @@ tag 会触发 `.github/workflows/release.yml`，自动生成 GitHub Release 并�
 gh release create v0.2.0 `
   "dist/cowork-framework-0.2.0.zip" `
   "dist/cowork-framework-0.2.0.zip.sha256" `
-  "dist/cowork-framework-0.2.0.tgz" `
+  "dist/dsh-cowork-framework-0.2.0.tgz" `
   --title "cowork v0.2.0" --generate-notes
 ```
 
@@ -300,7 +300,7 @@ npm publish --access public
 ## 6. 卸载与回滚
 
 ```powershell
-dsh plugin --profile web remove @cowork/framework
+dsh plugin --profile web remove dsh-cowork-framework
 dsh --profile web --dump-config | Select-String cowork
 ```
 

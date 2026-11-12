@@ -4,7 +4,7 @@
  * 安装：把本包放进 profile 的 node_modules，在 cordis.patch.yml 里 insert 一条：
  *   - insert:
  *       - id: cowork
- *         name: '@cowork/framework'
+ *         name: 'dsh-cowork-framework'
  *         config:
  *           repoPath: 'D:/work/project'
  *           agent: 'A'
@@ -58,7 +58,7 @@ async function resolveContext(config) {
     throw new Error(
       'cowork 插件未配置仓库路径：请在 profile 的 cordis.patch.yml 中为 cowork 条目设置 repoPath，' +
         '或设置环境变量 COWORK_REPO。示例：\n' +
-        "  - insert:\n      - id: cowork\n        name: '@cowork/framework'\n        config:\n          repoPath: 'D:/work/project'\n          agent: 'A'",
+        "  - insert:\n      - id: cowork\n        name: 'dsh-cowork-framework'\n        config:\n          repoPath: 'D:/work/project'\n          agent: 'A'",
     )
   }
   const repo = await loadRepoConfig(repoPath)

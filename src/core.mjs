@@ -210,7 +210,7 @@ export async function initWorkspace(options) {
   if (!meta) {
     meta = {
       formatVersion: 1,
-      framework: '@cowork/framework',
+      framework: 'dsh-cowork-framework',
       frameworkVersion: FRAMEWORK_VERSION,
       project,
       repoDir: 'repo.git',

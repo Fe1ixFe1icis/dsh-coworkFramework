@@ -137,9 +137,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\install\install-bundle.ps1
 `dsh plugin add` also accepts an npm package, a GitHub repo, or a tarball:
 
 ```powershell
-dsh plugin --profile web add @cowork/framework
+dsh plugin --profile web add dsh-cowork-framework
 dsh plugin --profile web add github:Fe1ixFe1icis/dsh-coworkFramework#v0.2.0
-dsh plugin --profile web add .\cowork-framework-<version>.tgz
+dsh plugin --profile web add .\dsh-cowork-framework-<version>.tgz
 ```
 
 The plugin resolves `repoPath` / `agent` from `COWORK_REPO` / `COWORK_AGENT`, then
@@ -156,7 +156,7 @@ The plugin resolves `repoPath` / `agent` from `COWORK_REPO` / `COWORK_AGENT`, th
 ```
 
 A later layer replaces the whole `config` object, so restate every key you need. Uninstall with
-`dsh plugin --profile web remove @cowork/framework`.
+`dsh plugin --profile web remove dsh-cowork-framework`.
 
 #### Option B — offline/manual install
 
@@ -171,7 +171,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\install\install-dsh-plugin
 ```
 
 Use `-Agent B` and B's clone path on machine B. The script copies the package into
-`~/.dsh/profiles/<profile>/node_modules/@cowork/framework`, appends an idempotent entry to
+`~/.dsh/profiles/<profile>/node_modules/dsh-cowork-framework`, appends an idempotent entry to
 `cordis.patch.yml` (with a timestamped backup), validates the module import and
 `dsh --dump-config`, and installs the CLI shim. Uninstall with
 `install\uninstall-dsh-plugin.ps1 -Profile <profile>`.
@@ -331,7 +331,7 @@ Tests isolate global state through `COWORK_HOME` and never touch your real `~/.c
   Ubuntu and Windows with Node 20/22, and uploads a source package.
 - `.github/workflows/release.yml` runs on `v*` tags, builds
   `dist/cowork-framework-<version>.zip` + `.sha256` and the installable
-  `dist/cowork-framework-<version>.tgz` bundle, and creates a GitHub Release.
+  `dist/dsh-cowork-framework-<version>.tgz` bundle, and creates a GitHub Release.
 - Locally: `npm run package` and `npm run pack`. See
   [RELEASING.md](RELEASING.md) and the bundle publishing guide
   [docs/publishing.zh.md](docs/publishing.zh.md).

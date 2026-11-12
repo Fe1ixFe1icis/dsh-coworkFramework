@@ -1,0 +1,29 @@
+# Normalize text files in the repository, regardless of the contributor's OS.
+* text=auto
+
+# Repository metadata and the license stay LF.
+.editorconfig text eol=lf
+.gitattributes text eol=lf
+.gitignore text eol=lf
+LICENSE text eol=lf
+
+# Source, configuration, and documentation use LF in the working tree.
+*.mjs text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.txt text eol=lf
+
+# Windows scripts must stay CRLF so cmd.exe and Windows PowerShell behave predictably.
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+
+# Binary assets are never normalized or diffed as text.
+*.zip binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary

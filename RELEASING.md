@@ -1,0 +1,149 @@
+# Releasing cowork
+
+cowork is distributed as a GitHub Release archive (`dist/cowork-framework-X.Y.Z.zip` plus
+its `dist/cowork-framework-X.Y.Z.zip.sha256` checksum). `dist/` is git-ignored and is not
+committed. Releases are built from a tag on `main`; the GitHub Actions workflow does this
+automatically, but the manual path is documented below as a fallback.
+
+## One-time repository setup
+
+Before the first release, connect the local repository to GitHub:
+
+```powershell
+git remote add origin <your-repository-url>
+git push -u origin main
+```
+
+Optionally add `repository` and `homepage` to `package.json` so the package metadata points
+at the public project:
+
+```json
+"repository": {
+  "type": "git",
+  "url": "https://github.com/<owner>/cowork.git"
+},
+"homepage": "https://github.com/<owner>/cowork#readme"
+```
+
+The release workflow publishes GitHub release assets only; it does not publish to npm. If
+you decide to publish the package to npm as well, treat that as a separate, explicit step
+after the GitHub release. Make sure Actions are enabled for the repository. The release
+workflow declares `permissions: contents: write` for its `GITHUB_TOKEN`; if an organization
+policy restricts token permissions, allow that permission for this workflow before tagging.
+
+## Versioning
+
+Use Semantic Versioning. For `0.x` releases, a minor bump may include breaking changes —
+call them out in the changelog. The version must be updated in **both** places and must
+match:
+
+1. `version` in `package.json` (also drives the archive name).
+2. `FRAMEWORK_VERSION` in `src/core.mjs` (reported by `cowork version` and stored in the
+   share metadata).
+
+Then update `CHANGELOG.md`: add a new section at the top with the version and release date,
+and list the user-visible changes under `Added`, `Changed`, `Fixed`, and `Security` as
+appropriate.
+
+## Release checklist
+
+1. **Start from a clean, up-to-date `main`:**
+
+   ```powershell
+   git switch main
+   git pull --ff-only
+   git status --short
+   ```
+
+   The working tree must be clean. Do not release from a feature branch or a dirty clone.
+
+2. **Bump the version** in `package.json` and `src/core.mjs`, and update `CHANGELOG.md` with
+   the new version and date.
+
+3. **Run the test suites:**
+
+   ```powershell
+   npm run check
+   npm test
+   npm run test:plugin
+   npm run test:smb
+   ```
+
+   `test:plugin` may print `SKIP` when the DSH modules are not linked, and `test:smb` skips
+   when no share is configured. Both skips exit successfully, but they are not sufficient
+   evidence for a release: link the DSH modules with `install/prepare-deps.ps1`, set
+   `$env:COWORK_REQUIRE_PLUGIN_DEPS = "1"`, and run the SMB suite against a real share at
+   least once before tagging.
+
+4. **Commit the release metadata:**
+
+   ```powershell
+   git add package.json src/core.mjs CHANGELOG.md
+   git commit -m "chore(release): vX.Y.Z"
+   ```
+
+5. **Create an annotated tag:**
+
+   ```powershell
+   git tag -a vX.Y.Z -m "cowork vX.Y.Z"
+   ```
+
+6. **Push the commit and the tag:**
+
+   ```powershell
+   git push origin main --tags
+   ```
+
+7. **Wait for the release workflow.** Pushing a `v*` tag triggers
+   `.github/workflows/release.yml` on `ubuntu-latest`. The workflow checks out the full
+   history, sets up Node 20, runs `npm run check` and `npm test`, runs `npm run package`,
+   and creates the GitHub Release with generated release notes. It uploads
+   `dist/*.zip` and `dist/*.sha256` with `softprops/action-gh-release@v2`.
+
+8. **Verify the published release** (see below).
+
+## Manual release without Actions
+
+If Actions are unavailable, build and publish from a machine with the tag checked out and
+the GitHub CLI authenticated (`gh auth status`):
+
+```powershell
+npm run check
+npm test
+npm run package
+Get-ChildItem .\dist
+gh release create vX.Y.Z `
+  "dist/cowork-framework-X.Y.Z.zip" `
+  "dist/cowork-framework-X.Y.Z.zip.sha256" `
+  --title "cowork vX.Y.Z" `
+  --generate-notes
+```
+
+Push the tag first if it only exists locally (`git push origin vX.Y.Z`). `npm run package`
+uses `git archive HEAD` and writes the zip plus its `.sha256` file into `dist/`; commit
+everything you want in the archive, and confirm both file names match the version in
+`package.json` before publishing.
+
+## Verify the release
+
+- The GitHub Release page lists exactly two assets: the zip and the `.sha256` file.
+- The checksum matches the downloaded archive:
+
+  ```powershell
+  Get-FileHash .\dist\cowork-framework-X.Y.Z.zip -Algorithm SHA256
+  Get-Content .\dist\cowork-framework-X.Y.Z.zip.sha256
+  ```
+
+- Download the archive from the release page, extract it to a clean directory such as
+  `D:\tools\cowork-framework`, and run:
+
+  ```powershell
+  node bin\cowork.mjs version
+  node bin\cowork.mjs help
+  ```
+
+  The version should match the tag, and the archive should contain `bin/`, `src/`,
+  `install/`, `docs/`, `README.zh.md`, and the license/contributor files.
+
+- If the release is wrong, prefer fixing forward with a new patch version. Do not move or
+  reuse a tag that has already been published.

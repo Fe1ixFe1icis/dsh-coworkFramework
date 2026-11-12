@@ -1,0 +1,55 @@
+name: Feature request
+description: Suggest an improvement or a new capability for cowork.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion. Describe the problem first, then the change you would
+        like to see. Please do not include secrets, internal IP addresses, hostnames,
+        usernames, or share paths.
+
+  - type: textarea
+    id: background
+    attributes:
+      label: Problem and context
+      description: What problem are you trying to solve? Who runs into it, and in which workflow?
+      placeholder: |
+        When two agents work on ... the current behavior is ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the behavior or interface you would like. Include commands, tool arguments, or examples if relevant.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches, workarounds, or prior art you have considered.
+    validations:
+      required: false
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Scope and impact
+      description: Which parts would change (CLI, DSH plugin/tools, task board, git workflow, docs, Windows/SMB), and would it break existing workflows or configuration?
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true
+        - label: I removed secrets, internal hostnames/IPs, usernames, and share paths from this request.
+          required: true

@@ -1,0 +1,122 @@
+name: Bug report
+description: Report a reproducible problem with cowork.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+
+        **Do not include secrets or internal infrastructure details.** Redact real IP
+        addresses, hostnames, usernames, share names, tokens, and repository contents.
+        Use placeholders such as `<share-host>` and `D:\tools\cowork-framework`.
+
+        Security vulnerabilities must be reported privately through GitHub Security
+        Advisories (see `SECURITY.md`), not as a public issue.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the actual behavior, including the command or `cowork_*` tool you used and the error message.
+      placeholder: |
+        I ran `cowork ...` and it ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Minimal, ordered steps. Replace real paths and hosts with placeholders.
+      placeholder: |
+        1. `cowork init --share "\\<share-host>\<share-name>\cowork" --agent A --dir "D:\tools\clone-a"`
+        2. `cowork ...`
+        3. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen instead?
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: Windows 11 23H2 / Windows Server 2022 / Ubuntu 24.04
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js version
+      description: Output of `node --version`.
+      placeholder: v20.19.0
+    validations:
+      required: true
+
+  - type: input
+    id: git-version
+    attributes:
+      label: git version
+      description: Output of `git --version`.
+      placeholder: git version 2.45.2.windows.1
+    validations:
+      required: true
+
+  - type: input
+    id: dsh-version
+    attributes:
+      label: DSH version
+      description: The DeepSeek Harness version, for example from `dsh --version`.
+      placeholder: 0.x.y
+    validations:
+      required: true
+
+  - type: input
+    id: cowork-version
+    attributes:
+      label: cowork version
+      description: Output of `cowork version` (or the `version` field in `package.json`).
+      placeholder: 0.1.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: doctor-output
+    attributes:
+      label: "`cowork doctor` output"
+      description: Paste the full output. Redact local paths, usernames, hostnames, and IP addresses.
+      render: text
+      placeholder: |
+        cowork 自检：
+          ✔ Node.js：版本 v20.19.0
+          ...
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or stack trace
+      description: Relevant CLI output, DSH/plugin logs, or a stack trace. Redact secrets and internal details.
+      render: text
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true
+        - label: I removed secrets, internal hostnames/IPs, usernames, and share paths from this report.
+          required: true

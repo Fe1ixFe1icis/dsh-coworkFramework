@@ -1,0 +1,77 @@
+{
+  "name": "@cowork/framework",
+  "version": "0.1.0",
+  "description": "LAN-first multi-agent collaboration framework for DeepSeek Harness: git branch workflow, shared task board, and a DSH plugin.",
+  "type": "module",
+  "main": "./src/plugin.mjs",
+  "exports": {
+    ".": "./src/plugin.mjs",
+    "./plugin": "./src/plugin.mjs",
+    "./cli": "./src/cli.mjs",
+    "./core": "./src/core.mjs",
+    "./config": "./src/config.mjs",
+    "./board": "./src/board.mjs",
+    "./git": "./src/git.mjs",
+    "./util": "./src/util.mjs",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "cowork": "./bin/cowork.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "install",
+    "docs",
+    "scripts",
+    "README.md",
+    "README.zh.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "AGENTS.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "test": "node tests/unit.test.mjs && node tests/smoke.mjs",
+    "test:unit": "node tests/unit.test.mjs",
+    "test:smoke": "node tests/smoke.mjs",
+    "test:plugin": "node tests/plugin.test.mjs",
+    "test:smb": "node tests/smb-smoke.mjs",
+    "test:all": "npm run check && npm test && npm run test:plugin",
+    "package": "node scripts/package-release.mjs"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "multi-agent",
+    "agent-cluster",
+    "collaboration",
+    "git-workflow",
+    "task-board",
+    "lan",
+    "plugin"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-llm": "*",
+    "@deepseek-ai/dsh-tools": "*",
+    "@deepseek-ai/schemastery": "*"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-llm": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-tools": {
+      "optional": true
+    },
+    "@deepseek-ai/schemastery": {
+      "optional": true
+    }
+  }
+}

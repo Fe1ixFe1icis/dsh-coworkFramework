@@ -1,0 +1,25 @@
+# 依赖与本地产物
+node_modules/
+dist/
+coverage/
+
+# cowork 的本地克隆/测试工作区（由 cowork init/join 创建）
+work/
+work-b/
+.cowork/
+
+# 本地侦察/临时产物
+research/
+*.zip
+*.sha256
+*.tmp
+*.log
+*.bak-*
+*.local
+
+# 编辑器/系统
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/

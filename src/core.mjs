@@ -62,7 +62,7 @@ import {
   writeJsonAtomic,
 } from './util.mjs'
 
-export const FRAMEWORK_VERSION = '0.2.0'
+export const FRAMEWORK_VERSION = '0.2.1'
 export const AGENT_RECENT_MS = 5 * 60 * 1000
 
 /** 统一结果包装。 */

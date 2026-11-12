@@ -1,6 +1,6 @@
 {
   "name": "@cowork/framework",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "LAN-first multi-agent collaboration framework for DeepSeek Harness: git branch workflow, shared task board, and a DSH plugin.",
   "type": "module",
   "main": "./src/plugin.mjs",

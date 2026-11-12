@@ -5,6 +5,27 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-11-12
+
+### Added
+
+- Installable DSH bundle: `package.json` declares `dsh.bundle.patch`,
+  `cordis.patch.yml` inserts the `cowork` row, and
+  `dsh plugin --profile <profile> add <package>` installs and activates it without
+  hand-editing the profile.
+- `install/install-bundle.ps1` wraps the bundle install, verifies `--dump-config`,
+  and prints where `repoPath` / `agent` will come from.
+- Release workflow now also builds `dist/cowork-framework-<version>.tgz`; `npm run pack`
+  produces the same installable tarball locally.
+- `install/uninstall-dsh-plugin.ps1` detects bundle installs and removes them through
+  `dsh plugin remove`, then cleans any legacy manual patch block.
+- `docs/publishing.zh.md` documents local/GitHub/npm/tarball install and publishing.
+
+### Changed
+
+- `cowork` is now installable as a DSH bundle; the legacy copy-and-patch installer
+  remains as an offline fallback.
+
 ## [0.1.0] - 2026-11-12
 
 ### Added
@@ -30,12 +51,6 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Step reminders: before an agent step, the plugin injects unread messages and
   review-ready tasks as a `<system-reminder>`, suppresses duplicate reminders for the same
   summary, and can be disabled with `notify: false`.
-- Installable DSH bundle: `package.json` declares `dsh.bundle.patch`, `cordis.patch.yml`
-  inserts the `cowork` row, and `dsh plugin --profile <profile> add <package>` installs and
-  activates it without hand-editing the profile. `install/install-bundle.ps1` wraps the
-  command and verifies the composed config; `install/uninstall-dsh-plugin.ps1` now detects
-  bundle installs and removes them through `dsh plugin remove`; releases also ship an npm
-  `.tgz`.
 - Install and lifecycle scripts under `install/`: install/uninstall the DSH plugin with a
   `cordis.patch.yml` backup and config validation, install the `cowork` command on `PATH`,
   package the framework for another machine, and prepare local DSH test dependencies.

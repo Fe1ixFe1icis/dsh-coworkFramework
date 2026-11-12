@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 300" width="1600" height="300" role="img" aria-label="cowork — multi-agent collaboration on a LAN for DeepSeek Harness">
+  <title>cowork — multi-agent collaboration on a LAN</title>
+  <defs>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#4F46E5" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#4F46E5" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="sh" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="5" stdDeviation="9" flood-color="#1E2A78" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="300" fill="#FFFFFF"/>
+  <ellipse cx="1270" cy="150" rx="330" ry="190" fill="url(#glow)"/>
+
+  <text x="100" y="88" font-family="ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace" font-size="12" letter-spacing="3.4" fill="#4F46E5">DEEPSEEK HARNESS</text>
+  <text x="98" y="174" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="96" font-weight="700" letter-spacing="-3" fill="#0A101C">cowork</text>
+  <text x="100" y="216" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22" fill="#6B7280">Multi-agent collaboration on a LAN</text>
+
+  <circle cx="1060" cy="90" r="5.5" fill="#4F46E5"/>
+  <path d="M1068 90 C 1112 90 1146 150 1186 150" stroke="#4F46E5" stroke-opacity="0.50" stroke-width="1.5" fill="none"/>
+  <circle cx="1060" cy="150" r="5.5" fill="#4F46E5"/>
+  <path d="M1068 150 C 1112 150 1146 150 1186 150" stroke="#4F46E5" stroke-opacity="0.50" stroke-width="1.5" fill="none"/>
+  <circle cx="1060" cy="210" r="5.5" fill="#4F46E5"/>
+  <path d="M1068 210 C 1112 210 1146 150 1186 150" stroke="#4F46E5" stroke-opacity="0.50" stroke-width="1.5" fill="none"/>
+
+  <g filter="url(#sh)">
+    <rect x="1190" y="80" width="310" height="140" rx="16" fill="#FAFBFD" stroke="#DFE5F0"/>
+    <text x="1222" y="132" font-family="ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace" font-size="14.5" fill="#0F172A">repo.git</text>
+    <text x="1222" y="166" font-family="ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace" font-size="14.5" fill="#8A94A6">board.json</text>
+    <circle cx="1472" cy="106" r="3.5" fill="#22C55E"/>
+  </g>
+</svg>
